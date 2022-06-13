@@ -8,13 +8,16 @@ create table news(
 	 news_type int(10),
 	 org_id int(10),
 	 news_describe VARCHAR(100)
-)
+);
 
 create table newstype(
 	type_id int(10),
 	type_name VARCHAR(20)
-)
-
+);
+insert into newstype values(1,'国内新闻');
+insert into newstype values(2,'国际新闻');
+insert into newstype values(3,'校园新闻');
+insert into newstype values(4,'娱乐新闻');
 create table user(
 	user_id INT(10) PRIMARY KEY AUTO_INCREMENT,
 	user_name VARCHAR(20),
@@ -28,8 +31,8 @@ create table user(
 	user_address VARCHAR(40),
 	user_describe VARCHAR(50),
 	user_sex INT(3)
-)
-
+);
+insert into user(user_name,user_password,role) values('admin','admin','3');
 create TABLE comment(
 	comment_id int(10) PRIMARY KEY AUTO_INCREMENT,
 	comment_content VARCHAR(100),
@@ -39,5 +42,5 @@ create TABLE comment(
 	comment_author_id int(10),
 	author_name VARCHAR(20),
 	comment_status int(5)
+);
 
-)
