@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chionanthus.mapper.NewsMapper">
+    <insert id="addNews" parameterType="News"  useGeneratedKeys="true" keyProperty="news_id">
+        insert into newsplatform.news(news_content, news_create_time,news_title, author_id,news_type,org_id,news_describe)
+        values(#{news_content},#{news_create_time},#{news_title},#{author_id},#{news_type},1,#{news_describe});
+    </insert>
+
+    <select id="queryNewsType" resultType="NewsType">
+        select * from newsplatform.newstype;
+    </select>
+
+    <select id="queryNewsByID" resultType="News" parameterType="int">
+        select * from newsplatform.news where news_id=#{news_id};
+    </select>
+
+    <select id="queryAllNews" resultType="News">
+        select * from newsplatform.news order by news_type
+    </select>
+
+    <select id="queryNewsByPageNum" resultType="News">
+        select * from newsplatform.news
+    </select>
+
+    <delete id="deleteNews" parameterType="int" >
+        delete from newsplatform.news where news_id=#{news_id}
+    </delete>
+
+    <update id="modifyNews" parameterType="News">
+        update newsplatform.news
+        set news_title =  #{news_title},news_type=#{news_type},
+            news_content=#{news_content},news_modified_time=#{news_modified_time},
+            news_describe=#{news_describe}
+        where news_id= #{news_id};
+    </update>
+    <select id="queryNewsTypeNameByID" parameterType="int" resultType="java.lang.String">
+        select type_name from newsplatform.newstype where type_id=#{news_type}
+    </select>
+
+    <select id="queryNewsByTitle" resultType="News" parameterType="java.lang.String">
+        select * from newsplatform.news where news_title like concat('%',#{news_title},'%')
+    </select>
+
+    <select id="queryCensoredNewsByTitle" resultType="News" parameterType="java.lang.String">
+        select * from newsplatform.news where news_title like concat('%',#{news_title},'%') and news_status = 1
+    </select>
+
+    <select id="queryNewsByType" resultType="News" parameterType="int">
+        select * from newsplatform.news where news_type = #{news_type}
+    </select>
+
+    <select id="queryCensoredNewsByType" resultType="News" parameterType="int">
+        select * from newsplatform.news where news_type = #{news_type} and news_status = 1
+    </select>
+
+    <update id="passNews" parameterType="int">
+        update newsplatform.news set news_status = 1  where news_id= #{news_id};
+    </update>
+    <update id="rejectNews" parameterType="int">
+        update newsplatform.news set news_status = 2 where news_id= #{news_id};
+    </update>
+    <update id="suspensionNews" parameterType="int">
+        update newsplatform.news set news_status = 0  where news_id= #{news_id};
+    </update>
+
+    <select id="queryNewsByAuthorId" resultType="News" parameterType="int">
+        select * from newsplatform.news where author_id=#{author_id} order by news_status
+    </select>
+
+    <select id="queryCensoredNewsByAuthorId" resultType="News" parameterType="int">
+        select * from newsplatform.news where author_id=#{author_id} and news_status = 1
+    </select>
+
+    <select id="queryNewsLimitByAuthor" resultType="News" >
+        select * from newsplatform.news where news_title like concat('%',#{news_title},'%') and author_id=#{user_id}
+    </select>
+
+</mapper>

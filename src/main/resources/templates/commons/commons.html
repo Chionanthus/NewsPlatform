@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+  <link th:href="@{/webjars/bootstrap/5.0.0-beta3/css/bootstrap.css}" rel="stylesheet">
+  <style>
+    .bd-placeholder-img {
+      font-size: 1.125rem;
+      text-anchor: middle;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+    }
+
+    @media (min-width: 768px) {
+      .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+      }
+    }
+  </style>
+  <!-- Custom styles for this template -->
+  <link href="asserts/css/dashboard.css" th:href="@{/asserts/css/dashboard.css}" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light" th:fragment="topbar"  >
+  <div class="container-fluid">
+    <a th:href="@{/tomain}" class="d-flex align-items-center col-md-2 mb-2 mb-md-0 text-dark text-decoration-none">
+      <img  th:src="@{/asserts/img/bootstrap-solid.svg}"  alt=""
+            width="40" height="40"></a>
+    <a style="font-size: 25px" class="navbar-brand" th:href="@{/tomain}"><strong>News平台</strong></a>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="nav nav-pills me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a th:class="${active eq 'main'}?'nav-link active':'nav-link'" class="nav-link active" aria-current="page" th:href="@{/tomain}">主页</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a href="#" th:class="${active eq 'user'}?'nav-link dropdown-toggle active':'dropdown-toggle nav-link'" id="navbarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            [[${session.user.user_name}]]
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" th:href="@{'/toUpdateUser/'+${session.user.user_id}}">个人信息</a></li>
+            <li><a class="dropdown-item" th:href="@{'/toAlterPassWord/'+${session.user.user_id}}">修改密码</a></li>
+            <li><a class="dropdown-item" style="color: red" th:href="@{/signout}">注销</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item" >
+          <a  th:class="${active eq 'addnews'}?'nav-link a/ctive':'nav-link'" th:href="@{/toAddNews}" th:if="${session.user.role} gt 1" tabindex="-1" aria-disabled="true">编写新闻</a>
+        </li>
+        <li class="nav-item" >
+          <a  th:class="${active eq 'mynews'}?'nav-link active':'nav-link'" th:href="@{'/MyNewsList/'+${session.user.user_id}}" th:if="${session.user.role} gt 1" tabindex="-1" aria-disabled="true">我的文章</a>
+        </li>
+        <li class="nav-item" >
+          <a  th:class="${active eq 'mycomment'}?'nav-link active':'nav-link'" th:href="@{'/MyCommentList/'+${session.user.user_id}}" tabindex="-1" aria-disabled="true">我的评论</a>
+        </li>
+        <li class="nav-item" >
+          <a  th:class="${active eq 'allnews'}?'nav-link active':'nav-link'" th:href="@{/allNews}" th:if="${session.user.role} eq 3" tabindex="-1" aria-disabled="true">管理新闻</a>
+        </li>
+
+        <li class="nav-item" >
+          <a th:class="${active eq 'alluser'}?'nav-link active':'nav-link'" th:href="@{/allUser}" th:if="${session.user.role} eq 3" tabindex="-1" aria-disabled="true">管理用户</a>
+        </li>
+        <li class="nav-item" >
+          <a th:class="${active eq 'allComment'}?'nav-link active':'nav-link'" th:href="@{/allComment}" th:if="${session.user.role} eq 3" tabindex="-1" aria-disabled="true">管理评论</a>
+        </li>
+      </ul>
+
+      <form class="d-flex" th:action="@{/news/queryCensoredNewsByTitle}" method="post">
+        <input class="form-control me-2" name="queryNewsTitle" type="search" placeholder="输入你想查询的新闻" aria-label="Search">
+        <input type="submit" value="查询" class="btn col-3 btn-outline-primary" >
+      </form>
+
+    </div>
+  </div>
+</nav>
+
+
+<script th:href="@{/asserts/js/bootstrap.bundle.min.js}" ></script>
+
+<script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js" integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script>
+<script src="/asserts/js/dashboard.js" th:href="@{/asserts/js/dashboard.js}"></script>
+</body>
+</html>

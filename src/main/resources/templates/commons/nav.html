@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+<nav class="mb-4 mt-4" th:fragment="nav"  >
+<!--  nav-pills-->
+  <ul class="nav nav-tabs nav-fill">
+    <li class="nav-item">
+      <a th:class="${active eq 'main'}?'nav-link active':'nav-link'"  aria-current="page" th:href="@{/tomain}">新闻汇总</a>
+    </li>
+    <li class="nav-item">
+      <a th:class="${active eq 1}?'nav-link active':'nav-link'" th:href="@{/toNewsList/1}">国内新闻</a>
+    </li>
+    <li class="nav-item">
+      <a th:class="${active eq 2}?'nav-link active':'nav-link'" th:href="@{/toNewsList/2}">国际新闻</a>
+    </li>
+    <li class="nav-item">
+      <a th:class="${active eq 3}?'nav-link active':'nav-link'" th:href="@{/toNewsList/3}">校园新闻</a>
+    </li>
+    <li class="nav-item">
+      <a th:class="${active eq 4}?'nav-link active':'nav-link'" th:href="@{/toNewsList/4}">娱乐新闻</a>
+    </li>
+  </ul>
+</nav>
+</body>
+</html>

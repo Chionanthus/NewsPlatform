@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>用户列表</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <link href="/asserts/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/5.0.0-beta3/css/bootstrap.css}" rel="stylesheet">
+    <!--建议手动加在语言，避免在ie下有时因为加载语言失败导致编辑器加载失败-->
+    <!--这里加载的语言文件会覆盖你在配置项目里添加的语言类型，比如你在配置项目里配置的是英文，这里加载的中文，那最后就是中文-->
+    <script type="text/javascript" charset="utf-8" th:src="@{/asserts/js/jquery-3.6.0.min.js}"></script>
+    <style type="text/css">
+        div{
+            width:100%;
+        }
+    </style>
+</head>
+<body class="text-center">
+<div th:replace="~{commons/commons::topbar(active='alluser')}"></div>
+<div class="container-fluid col-9 pt-3 px-4">
+    <div class="row mb-4">
+        <div class="col-lg-4 column">
+            <a class="btn btn-success"  style="float:left" th:href="@{/toAddAuthor}">新增作者</a>
+            <span th:style="'color:'+  ${style} +';font-weight:bold'"   th:text="${msg}" th:if="${msg}!=null"></span>
+        </div>
+        <div class="col-lg-8 column">
+            <form th:action="@{/news/queryUserByName}" method="post" class="pull-right input-group form-inline" style="float:right;width:300px">
+                <input type="text" name="queryUserName" class="form-control" placeholder="请输入要查询的用户名称">
+                <input type="submit" value="查询" class="btn btn-primary">
+            </form>
+        </div>
+    </div>
+
+
+
+
+    <div class="row clearfix">
+        <div class="column">
+            <table class="table table-hover table-striped">
+                <thead>
+                <tr>
+                    <th>用户ID</th>
+                    <th>用户名称</th>
+                    <th>用户注册时间</th>
+                    <th>用户电话</th>
+                    <th>用户角色</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="people:${user}">
+                    <td th:text="${people.user_id}"></td>
+                    <td th:text="${people.user_name}"></td>
+                    <td th:text="${people.user_create_time}"></td>
+                    <td th:text="${people.user_phone}"></td>
+<!--                    <td th:text="${people.role}==1 ? '普通用户':'作者'" th:if="${people.role} < 3"></td>-->
+<!--                    <td th:text="'管理员'" th:if="${people.role} eq 3"></td>-->
+                    <td>
+                        <div class="btn-group" th:if="${people.role} ne 3 ">
+                            <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span th:if="${people.role} eq 1" th:text="普通用户"></span>
+                                <span th:if="${people.role} eq 2" th:text="作者"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" th:href="@{'/admin/switchRole/'+${people.user_id}}"  th:if="${people.role} eq 1">作者</a></li>
+                                <li><a class="dropdown-item" th:href="@{'/admin/switchRole/'+${people.user_id}}"  th:if="${people.role} eq 2">普通用户</a></li>
+                            </ul>
+                        </div>
+                    </td>
+
+
+
+                    <td>
+                        <div th:if="${people.role} < 3">
+                            <a class="btn btn-outline-warning" th:href="@{'/toUpdateUser/'+${people.user_id}}">修改信息</a>
+                            &nbsp; | &nbsp;
+                            <a class="btn btn-outline-danger" th:href="@{'/user/deleteUser/'+${people.user_id}}">删除用户</a>
+                        </div>
+                      </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script th:src="@{/asserts/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

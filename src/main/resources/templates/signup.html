@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>注册</title>
+    <!-- Bootstrap core CSS -->
+    <link href="asserts/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/5.0.0-beta3/css/bootstrap.css}" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="asserts/css/signin.css" th:href="@{/asserts/css/signin.css}" rel="stylesheet">
+
+    <script type="text/javascript" src="asserts/js/jquery-3.3.1.js"
+            th:src="@{/webjars/jquery/3.3.1/jquery.js}"></script>
+
+    <script type="text/javascript" th:src="@{/asserts/js/bootstrap.min.js}"></script>
+    <script>
+        //校验用户名
+        //单词字符，长度8到20位
+        var alertList = document.querySelectorAll('.alert')
+        alertList.forEach(function (alert) {
+            new bootstrap.Alert(alert)
+        })
+        function checkUsername() {
+            //1.获取用户名值
+            var username = $("#username").val();
+            //定义正则，注意，{8,20}中间没空格，加空格错误！！！注意格式
+            var reg_username = /^[a-zA-Z0-9_-]{4,16}$/;
+            //判断正则，并给出提示信息
+            var flag = reg_username.test(username);
+            if (flag) {
+                //用户名合法
+                $('.alert').alert('close');
+                $("#username").css("border", "2px solid  #198754");
+            } else {
+                //用户名非法
+                //先删除原本的
+                $('.alert').alert('close');
+                // 添加自己的
+                $("#addAlert").html("<div class=\"alert alert-danger alert-dismissible fade show\" id=\"tempAlert\" role=\"alert\">\n" +
+                    "用户姓名格式错误\n" +
+                    "            <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\"  aria-label=\"Close\"></button>\n" +
+                    "        </div>");
+                $("#username").css("border", "1px solid red");
+            }
+            return flag;
+        }
+
+        //校验密码
+        function checkPassword() {
+            //1.获取密码
+            var password = $("#password").val();
+            //定义正则，注意，{8,20}中间没空格，加空格错误！！！注意格式
+            var reg_password = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/;
+            //判断正则，并给出提示信息
+            var flag = reg_password.test(password);
+            if (flag) {
+                //密码合法
+                //清除提示
+                $('.alert').alert('close');
+
+
+                $("#password").css("border", "2px solid  #198754");
+            } else {
+                //密码非法
+                //清除提示
+                $('.alert').alert('close');
+                //添加<span>子元素
+                $("#addAlert").html("<div class=\"alert alert-danger alert-dismissible fade show\" id=\"tempAlert\" role=\"alert\">\n" +
+                    "密码必须包含字母和数字，且在6~18位之间\n" +
+                    "            <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\"  aria-label=\"Close\"></button>\n" +
+                    "        </div>");
+                $("#password").css("border", "1px solid red");
+            }
+            return flag;
+        }
+        /*
+         确认密码校验
+         * */
+        function checkRePassword() {
+            //获取密码输入
+            var uPass = $("#password").val();
+            //获取确认密码输入
+            var uRePass = $("#passwordVerify").val();
+            //对密码输入进行校验
+            if(uRePass==="")
+            {
+                $("#passwordVerify").css("border", "1px solid red");
+                return false;
+            }
+            if (uPass === uRePass) {
+                //确认密码正确
+                //清除提示
+                $('.alert').alert('close');
+                $("#passwordVerify").css("border", "2px solid #198754");
+                return true;
+            } else {
+                //确认密码不正确
+                $('.alert').alert('close');
+                //添加<span>子元素
+                $("#addAlert").html("<div class=\"alert alert-danger alert-dismissible fade show\" id=\"tempAlert\" role=\"alert\">\n" +
+                    "两次输入密码不一致\n" +
+                    "            <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\"  aria-label=\"Close\"></button>\n" +
+                    "        </div>");
+                $("#passwordVerify").css("border", "1px solid red");
+                return false;
+            }
+
+            // return flag;
+        }
+        $(function () {
+            //表单提交时，调用所有校验方法
+            $("#registerForm").submit(function () {
+                if (checkUsername() && checkPassword() && checkRePassword()) {
+                    // // 校验通过,发送ajax请求，提交表单的数据
+                    // $.post("user/registUserServlet", $(this).serialize(), function (data) {
+                    // 	// 处理服务器响应的数据  data  {flag:true,errorMsg:"注册失败"}
+                    // 	if (data.flag) {
+                    // 		// 注册成功，跳转到register_ok.html页面
+                    // 		location.href = "register_ok.html";
+                    // 	} else {
+                    // 		// 注册失败
+                    // 		$("#errorMsg").html(data.errorMsg);
+                    // 	}
+                    // });
+                    return true;
+                }
+                //2.不让页面跳转
+                return false;
+                //如果这个方法没有返回值，或者返回为true，则表单提交，如果返回为false，则表单不提交
+            });
+            //当某一个组件失去焦点是，调用对应的校验方法
+            //此处传的参数是函数名，函数名！！！
+            // $("#username").blur(checkUsername);
+            // $("#password").blur(checkPassword);
+            // $("#passwordVerify").blur(checkRePassword);
+        });
+    </script>
+</head>
+
+
+
+<body class="text-center">
+<form class="form-signin"  th:action="@{/signup}" method="post">
+    <div id="addAlert" style="height: 100px">
+        <div class="alert alert-danger alert-dismissible fade show" style="opacity: 0;" id="tempAlert" role="alert">
+            <button type="button" class="btn-close" data-bs-dismiss="alert"  aria-label="Close"></button>
+        </div>
+    </div>
+    <img class="mb-4" th:src="@{/asserts/img/bootstrap-solid.svg}" src="asserts/img/bootstrap-solid.svg" alt=""
+         width="100" height="100">
+    <h1 class="h3 mb-3 font-weight-normal" th:text="#{signup.tip}">Please sign up</h1>
+    <!--判断-->
+    <p style="color: red" th:text="${msg}" th:if="${not #strings.isEmpty(msg)}"></p>
+
+<!--    <input type="text"  id="username" name="username"  class="form-control"-->
+<!--           th:placeholder="#{signup.username}" required="" autofocus="" onblur="checkUsername()">-->
+<!--    <input type="password" id="password" name="password" class="form-control" th:placeholder="#{signup.password}"-->
+<!--           placeholder="Password" required="" onblur="checkPassword()">-->
+<!--    <input type="password" id="passwordVerify" name="passwordVerify" class="form-control"-->
+<!--           th:placeholder="#{signup.passwordverify}" required="" onblur="checkRePassword()">-->
+
+    <div class="form-floating mb-3">
+        <input type="text" class="form-control"  name="username" id="username"
+               th:placeholder="#{signup.username}"  required=""  onblur="checkUsername()">
+        <label for="username" th:text="#{signup.username}"></label>
+    </div>
+    <div class="form-floating mb-1">
+        <input type="password" class="form-control"  name="password" id="password"
+               th:placeholder="#{signup.password}"  required="" onblur="checkPassword()">
+        <label for="password" th:text="#{signup.password}"></label>
+    </div>
+    <div class="form-floating mb-1">
+        <input type="password" class="form-control"  name="passwordVerify" id="passwordVerify"
+               th:placeholder="#{signup.passwordverify}"  required="" onblur="checkRePassword()">
+        <label for="password" th:text="#{signup.passwordverify}"></label>
+    </div>
+    <div class="mb-3 ">
+        <a class="float-end" href="login.html" th:text="#{signup.login}"></a>
+    </div>
+        <br>
+    <button class="btn btn-lg btn-primary btn-block" th:text="#{signup.signup}" type="submit">Sign up</button>
+
+
+
+
+
+
+    <p class="mt-5 mb-3 text-muted">© 2021</p>
+    <a class="btn btn-sm" th:href="@{/signup.html(l='zh_CN')}" href="">中文</a>
+    <a class="btn btn-sm" th:href="@{/signup.html(l='en_US')}" href="">English</a>
+</form>
+</body>
+
+</html>

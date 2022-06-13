@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.82.0">
+    <title>信息修改</title>
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/album/">
+    <link th:href="@{/webjars/bootstrap/5.0.0-beta3/css/bootstrap.css}" rel="stylesheet">
+    <link th:href="@{/asserts/css/headers.css}" rel="stylesheet">
+    <script type="text/javascript" charset="utf-8" th:src="@{/asserts/js/jquery-3.6.0.min.js}"></script>
+
+    <script>
+        //校验用户名
+        //单词字符，长度8到20位
+        var alertList = document.querySelectorAll('.alert')
+        alertList.forEach(function (alert) {
+            new bootstrap.Alert(alert)
+        })
+        function checkUsername() {
+            //1.获取用户名值
+            var username = $("#user_name").val();
+            //定义正则，注意，{8,20}中间没空格，加空格错误！！！注意格式
+            var reg_username = /^[a-zA-Z0-9_-]{4,16}$/;
+            //判断正则，并给出提示信息
+            var flag = reg_username.test(username);
+            if (flag) {
+                //用户名合法
+                $("#user_name").removeClass("is-invalid").addClass("is-valid");
+            } else {
+                $("#user_name").removeClass("is-valid").addClass("is-invalid");
+            }
+            return flag;
+        }
+        function alterDescribeTips()
+        {
+            var user_describe = $("#user_describe").val();
+            var length= user_describe.length;
+            $("#describe_help").html(length+"/150");
+        }
+        function checkDescribe()
+        {
+            var length= $("#user_describe").val().length;
+            if(length>150)
+            {
+                alert("自我描述过长");
+                return false;
+            }
+            else return true;
+        }
+        $(function () {
+            //表单提交时，调用所有校验方法
+            $("#registerForm").submit(function () {
+                if (checkUsername()&&checkDescribe()) {
+                    return true;
+                }
+                return false;
+            });
+        });
+    </script>
+
+
+</head>
+<body>
+<div th:replace="~{commons/commons::topbar(active='user')}"></div>
+<div class="container">
+    <div class="row">
+        <main role="main" class="col-md-12 ml-sm-auto col-lg-12 pt-3 px-4">
+            <div class="container mb-3">
+                <h2>个人信息</h2>
+                <hr>
+                <form class="m-auto form-horizontal" style="max-width: 330px;">
+                    <input type="hidden"  id="user_id" th:value="${UpdateUser.user_id}" required>
+                    <div class="mb-3">
+                        <label for="user_name">用户名</label>
+                        <input type="text" class="form-control is-valid" id="user_name" th:value="${UpdateUser.user_name}"
+                               placeholder="用户名" onblur="checkUsername()" required>
+                        <div class="invalid-feedback" id="user_nametips" >
+                            用户名格式为4~16位大小写字母组合
+                        </div>
+                    </div>
+                    <div class=" mb-3">
+                        <label for="user_email">联系邮箱</label>
+                        <input type="text" class="form-control" id="user_email" th:value="${UpdateUser.user_email}" placeholder="邮箱" aria-describedby="inputGroupPrepend3">
+                    </div>
+                    <div class="mb-3">
+                        <label for="user_phone">联系电话</label>
+                        <input type="text" class="form-control" th:value="${UpdateUser.user_phone}" id="user_phone" placeholder="电话">
+                    </div>
+                    <div class="mb-3">
+                        <label for="user_address">住址</label>
+                        <input type="text" class="form-control" th:value="${UpdateUser.user_address}" id="user_address" placeholder="住址">
+                    </div>
+                    <div class="mb-3">
+                        <label for="user_describe" class="form-label">个人描述</label>
+                        <textarea class="form-control" id="user_describe" th:text="${UpdateUser.getUser_describe()}" rows="5" placeholder="个人描述" onkeyup="alterDescribeTips()"></textarea>
+                        <div id="describe_help" class="form-text" th:text="${UpdateUser.user_describe.length()+'/150'}"></div>
+                    </div>
+                    <div class="d-grid gap-2 col-6 mx-auto">
+                        <button class="btn btn-block btn-lg btn-outline-success mt-2" name="Submit" type="button" onClick="prepareSubmit();">提交修改</button>
+                    </div>
+                </form>
+
+            </div>
+        </main>
+    </div>
+</div>
+
+<script type="text/javascript" th:inline="javascript">
+    // Ajax提交表单
+    function prepareSubmit(){
+       if(checkUsername())
+        {
+            var basePath = [[${#httpServletRequest.getScheme() + "://" + #httpServletRequest.getServerName() + ":" + #httpServletRequest.getServerPort() + #httpServletRequest.getContextPath()}]];
+            // document.all_text.submit();
+            $.post({
+                url:basePath+'/UpdateUser',
+                data:{
+                    "user_id":$("#user_id").val(),
+                    "user_name":$("#user_name").val(),
+                    "user_email":$("#user_email").val(),
+                    "user_phone":$("#user_phone").val(),
+                    "user_address":$("#user_address").val(),
+                    "user_describe":$("#user_describe").val()
+                },
+                success:function(data)
+                {
+                    alert(data);
+                    location.reload()
+                },
+                error:function ()
+                {
+                    alert("发生错误");
+                    $("#user_name").removeClass("is-valid").addClass("is-invalid");
+                    $("#user_nametips").html("用户名重复")
+                }
+            })
+
+        } else {
+           alert("表单格式不正确");
+        }
+    }
+</script>
+<script th:src="@{/asserts/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
