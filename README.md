@@ -1,1 +1,2 @@
 # NewsPlatform
+本项目是一个使用Spring Boot框架开发的新闻浏览发布平台
